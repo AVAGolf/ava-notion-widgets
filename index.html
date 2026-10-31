@@ -1,90 +1,226 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AVA dev widgets</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --pine: #16382e;
-    --pine-2: #1d4a3d;
-    --teal: #359683;
-    --flag: #ffe708;
-    --ball: #ffffff;
-    --mist: #a9c9bf;
-  }
-  * { box-sizing: border-box; margin: 0; }
-  html, body { height: 100%; }
-  body {
-    background: var(--pine);
-    color: var(--ball);
-    font-family: "Sora", "Avenir Next", "Segoe UI", system-ui, sans-serif;
-    font-variant-numeric: tabular-nums;
-    padding: 14px 16px;
-    overflow: hidden;
-  }
-  /* ---------- clocks ---------- */
-  .clocks { display: grid; gap: 10px; grid-template-columns: 1fr; }
-  @media (min-width: 520px) { .clocks { grid-template-columns: repeat(3, 1fr); gap: 18px; } }
-  .clock { display: grid; grid-template-columns: 44px 1fr auto; align-items: center; gap: 10px; }
-  .arc { width: 44px; height: 24px; overflow: visible; }
-  .arc path { fill: none; stroke: var(--teal); stroke-width: 2; stroke-linecap: round; opacity: .55; }
-  .arc line { stroke: var(--pine-2); stroke-width: 2; }
-  .arc circle { fill: var(--ball); transition: cx 1s, cy 1s; }
-  .arc.night circle { fill: var(--mist); opacity: .55; }
-  .who { font-size: 13px; line-height: 1.25; }
-  .who small { display: block; color: var(--mist); font-size: 11px; }
-  .time { font-size: 22px; font-weight: 600; letter-spacing: -.01em; text-align: right; }
-  .time span { font-size: 11px; font-weight: 400; color: var(--mist); margin-left: 3px; }
-  /* ---------- countdown ---------- */
-  .countdown { display: flex; flex-direction: column; gap: 6px; }
-  .cd-title { font-size: 13px; color: var(--mist); }
-  .cd-main { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
-  .cd-days { font-size: 44px; font-weight: 700; color: var(--flag); line-height: 1; letter-spacing: -.02em; }
-  .cd-days small { font-size: 15px; font-weight: 600; margin-left: 6px; color: var(--flag); }
-  .cd-rest { font-size: 16px; font-weight: 600; }
-  .cd-rest span { color: var(--mist); font-weight: 400; font-size: 12px; margin: 0 8px 0 2px; }
-  .done .cd-days { color: var(--teal); font-size: 30px; }
-  .err { color: var(--mist); font-size: 13px; line-height: 1.5; }
-</style>
-</head>
-<body>
-<div id="root"></div>
-<script>
-const q = new URLSearchParams(location.search);
-const view = q.get("view") || "clocks";
-const root = document.getElementById("root");
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AVA dev widgets</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --pine: #16382e;
+        --pine-2: #1d4a3d;
+        --teal: #359683;
+        --flag: #ffe708;
+        --ball: #ffffff;
+        --mist: #a9c9bf;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        background: var(--pine);
+        color: var(--ball);
+        font-family: "Sora", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+        font-variant-numeric: tabular-nums;
+        padding: 14px 16px;
+        overflow: hidden;
+      }
+      /* ---------- clocks ---------- */
+      .clocks {
+        display: grid;
+        gap: 10px;
+        grid-template-columns: 1fr;
+      }
+      @media (min-width: 520px) {
+        .clocks {
+          grid-template-columns: repeat(3, 1fr);
+          gap: 18px;
+        }
+      }
+      .clock {
+        display: grid;
+        grid-template-columns: 44px 1fr auto;
+        align-items: center;
+        gap: 10px;
+      }
+      .arc {
+        width: 44px;
+        height: 24px;
+        overflow: visible;
+      }
+      .arc path {
+        fill: none;
+        stroke: var(--teal);
+        stroke-width: 2;
+        stroke-linecap: round;
+        opacity: 0.55;
+      }
+      .arc line {
+        stroke: var(--pine-2);
+        stroke-width: 2;
+      }
+      .arc circle {
+        fill: var(--ball);
+        transition:
+          cx 1s,
+          cy 1s;
+      }
+      .arc.night circle {
+        fill: var(--mist);
+        opacity: 0.55;
+      }
+      .who {
+        font-size: 13px;
+        line-height: 1.25;
+      }
+      .who small {
+        display: block;
+        color: var(--mist);
+        font-size: 11px;
+      }
+      .time {
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        text-align: right;
+      }
+      .time span {
+        font-size: 11px;
+        font-weight: 400;
+        color: var(--mist);
+        margin-left: 3px;
+      }
+      /* ---------- countdown ---------- */
+      .countdown {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        text-align: center;
+      }
+      .cd-title {
+        font-size: 19px;
+        font-weight: 600;
+        color: var(--ball);
+        letter-spacing: -0.01em;
+      }
+      .cd-main {
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+      .cd-days {
+        font-size: 44px;
+        font-weight: 700;
+        color: var(--flag);
+        line-height: 1;
+        letter-spacing: -0.02em;
+      }
+      .cd-days small {
+        font-size: 15px;
+        font-weight: 600;
+        margin-left: 6px;
+        color: var(--flag);
+      }
+      .cd-rest {
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .cd-rest span {
+        color: var(--mist);
+        font-weight: 400;
+        font-size: 12px;
+        margin: 0 8px 0 2px;
+      }
+      .done .cd-days {
+        color: var(--teal);
+        font-size: 30px;
+      }
+      .err {
+        color: var(--mist);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      const q = new URLSearchParams(location.search);
+      const view = q.get("view") || "clocks";
+      const root = document.getElementById("root");
 
-// ---- time zone helpers (DST-correct via Intl) ----
-function partsIn(date, tz) {
-  const f = new Intl.DateTimeFormat("en-US", { timeZone: tz, hourCycle: "h23",
-    year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" });
-  const o = {}; for (const p of f.formatToParts(date)) o[p.type] = p.value;
-  return { y: +o.year, mo: +o.month, d: +o.day, h: +o.hour % 24, mi: +o.minute, s: +o.second };
-}
-function offsetMin(date, tz) {
-  const p = partsIn(date, tz);
-  return Math.round((Date.UTC(p.y, p.mo - 1, p.d, p.h, p.mi, p.s) - date.getTime()) / 60000);
-}
-function zonedToUtc(str, tz) {
-  const m = str.match(/^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}))?/);
-  if (!m) return null;
-  const guess = Date.UTC(+m[1], m[2] - 1, +m[3], +(m[4] || 0), +(m[5] || 0));
-  let t = guess - offsetMin(new Date(guess), tz) * 60000;
-  return t - (offsetMin(new Date(t), tz) - offsetMin(new Date(guess), tz)) * 60000;
-}
+      // ---- time zone helpers (DST-correct via Intl) ----
+      function partsIn(date, tz) {
+        const f = new Intl.DateTimeFormat("en-US", {
+          timeZone: tz,
+          hourCycle: "h23",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        });
+        const o = {};
+        for (const p of f.formatToParts(date)) o[p.type] = p.value;
+        return {
+          y: +o.year,
+          mo: +o.month,
+          d: +o.day,
+          h: +o.hour % 24,
+          mi: +o.minute,
+          s: +o.second,
+        };
+      }
+      function offsetMin(date, tz) {
+        const p = partsIn(date, tz);
+        return Math.round(
+          (Date.UTC(p.y, p.mo - 1, p.d, p.h, p.mi, p.s) - date.getTime()) /
+            60000,
+        );
+      }
+      function zonedToUtc(str, tz) {
+        const m = str.match(/^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}))?/);
+        if (!m) return null;
+        const guess = Date.UTC(
+          +m[1],
+          m[2] - 1,
+          +m[3],
+          +(m[4] || 0),
+          +(m[5] || 0),
+        );
+        let t = guess - offsetMin(new Date(guess), tz) * 60000;
+        return (
+          t -
+          (offsetMin(new Date(t), tz) - offsetMin(new Date(guess), tz)) * 60000
+        );
+      }
 
-// ---- clocks ----
-// ?view=clocks&zones=Central|America/Chicago,Eastern|America/New_York,Germany|Europe/Berlin
-const defaultZones = "Central|America/Chicago,Eastern|America/New_York,Germany|Europe/Berlin";
-function renderClocks() {
-  const zones = (q.get("zones") || defaultZones).split(",").map(z => {
-    const [label, tz] = z.split("|"); return { label, tz };
-  });
-  root.innerHTML = `<div class="clocks">${zones.map((z, i) => `
+      // ---- clocks ----
+      // ?view=clocks&zones=Central|America/Chicago,Eastern|America/New_York,Germany|Europe/Berlin
+      const defaultZones =
+        "Central|America/Chicago,Eastern|America/New_York,Germany|Europe/Berlin";
+      function renderClocks() {
+        const zones = (q.get("zones") || defaultZones).split(",").map((z) => {
+          const [label, tz] = z.split("|");
+          return { label, tz };
+        });
+        root.innerHTML = `<div class="clocks">${zones
+          .map(
+            (z, i) => `
     <div class="clock" id="c${i}">
       <svg class="arc" viewBox="0 0 44 24" aria-hidden="true">
         <line x1="1" y1="22" x2="43" y2="22"/>
@@ -93,72 +229,93 @@ function renderClocks() {
       </svg>
       <div class="who">${z.label}<small></small></div>
       <div class="time"></div>
-    </div>`).join("")}</div>`;
-  const ref = zones[0].tz;
-  function tick() {
-    const now = new Date();
-    zones.forEach((z, i) => {
-      const el = document.getElementById("c" + i);
-      const p = partsIn(now, z.tz);
-      const h12 = p.h % 12 || 12;
-      el.querySelector(".time").innerHTML =
-        `${h12}:${String(p.mi).padStart(2, "0")}<span>${p.h < 12 ? "am" : "pm"}</span>`;
-      const diff = (offsetMin(now, z.tz) - offsetMin(now, ref)) / 60;
-      const dayTxt = new Intl.DateTimeFormat("en-US", { timeZone: z.tz, weekday: "short" }).format(now);
-      el.querySelector(".who small").textContent =
-        i === 0 ? dayTxt : `${dayTxt}, ${diff >= 0 ? "+" : ""}${diff}h`;
-      // the ball rides an arc from 6am to 6pm; below the line at night
-      const mins = p.h * 60 + p.mi;
-      const svg = el.querySelector(".arc"), c = svg.querySelector("circle");
-      const day = mins >= 360 && mins < 1080;
-      svg.classList.toggle("night", !day);
-      if (day) {
-        const a = Math.PI * (1 - (mins - 360) / 720);
-        c.setAttribute("cx", (22 + 18 * Math.cos(a)).toFixed(2));
-        c.setAttribute("cy", (22 - 18 * Math.sin(a)).toFixed(2));
-      } else {
-        const f = ((mins - 1080 + 1440) % 1440) / 720;
-        c.setAttribute("cx", (40 - 36 * f).toFixed(2));
-        c.setAttribute("cy", "22");
+    </div>`,
+          )
+          .join("")}</div>`;
+        const ref = zones[0].tz;
+        function tick() {
+          const now = new Date();
+          zones.forEach((z, i) => {
+            const el = document.getElementById("c" + i);
+            const p = partsIn(now, z.tz);
+            const h12 = p.h % 12 || 12;
+            el.querySelector(".time").innerHTML =
+              `${h12}:${String(p.mi).padStart(2, "0")}<span>${p.h < 12 ? "am" : "pm"}</span>`;
+            const diff = (offsetMin(now, z.tz) - offsetMin(now, ref)) / 60;
+            const dayTxt = new Intl.DateTimeFormat("en-US", {
+              timeZone: z.tz,
+              weekday: "short",
+            }).format(now);
+            el.querySelector(".who small").textContent =
+              i === 0 ? dayTxt : `${dayTxt}, ${diff >= 0 ? "+" : ""}${diff}h`;
+            // the ball rides an arc from 6am to 6pm; below the line at night
+            const mins = p.h * 60 + p.mi;
+            const svg = el.querySelector(".arc"),
+              c = svg.querySelector("circle");
+            const day = mins >= 360 && mins < 1080;
+            svg.classList.toggle("night", !day);
+            if (day) {
+              const a = Math.PI * (1 - (mins - 360) / 720);
+              c.setAttribute("cx", (22 + 18 * Math.cos(a)).toFixed(2));
+              c.setAttribute("cy", (22 - 18 * Math.sin(a)).toFixed(2));
+            } else {
+              const f = ((mins - 1080 + 1440) % 1440) / 720;
+              c.setAttribute("cx", (40 - 36 * f).toFixed(2));
+              c.setAttribute("cy", "22");
+            }
+          });
+        }
+        tick();
+        setInterval(tick, 1000);
       }
-    });
-  }
-  tick(); setInterval(tick, 1000);
-}
 
-// ---- countdown ----
-// ?view=countdown&title=imagen%20launch&date=2026-11-20T09:00&tz=America/Chicago&done=Shipped
-function renderCountdown() {
-  const title = q.get("title") || "Launch";
-  const tz = q.get("tz") || "America/Chicago";
-  const date = q.get("date");
-  const target = date ? zonedToUtc(date, tz) : null;
-  if (!target) {
-    root.innerHTML = `<p class="err">Add a target date to the link, like<br>?view=countdown&amp;title=imagen%20launch&amp;date=2026-11-20T09:00&amp;tz=America/Chicago</p>`;
-    return;
-  }
-  root.innerHTML = `<div class="countdown"><div class="cd-title"></div>
+      // ---- countdown ----
+      // ?view=countdown&title=imagen%20launch&date=2026-11-20T09:00&tz=America/Chicago&done=Shipped
+      function renderCountdown() {
+        const title = q.get("title") || "Launch";
+        const tz = q.get("tz") || "America/Chicago";
+        const date = q.get("date");
+        const target = date ? zonedToUtc(date, tz) : null;
+        if (!target) {
+          root.innerHTML = `<p class="err">Add a target date to the link, like<br>?view=countdown&amp;title=imagen%20launch&amp;date=2026-11-20T09:00&amp;tz=America/Chicago</p>`;
+          return;
+        }
+        root.innerHTML = `<div class="countdown"><div class="cd-title"></div>
     <div class="cd-main"><div class="cd-days"></div><div class="cd-rest"></div></div></div>`;
-  root.querySelector(".cd-title").textContent = title;
-  function tick() {
-    let ms = target - Date.now();
-    const box = root.querySelector(".countdown");
-    if (ms <= 0) {
-      box.classList.add("done");
-      root.querySelector(".cd-days").textContent = q.get("done") || "Shipped";
-      root.querySelector(".cd-rest").textContent = "";
-      return;
-    }
-    const d = Math.floor(ms / 864e5); ms -= d * 864e5;
-    const h = Math.floor(ms / 36e5); ms -= h * 36e5;
-    const m = Math.floor(ms / 6e4);
-    root.querySelector(".cd-days").innerHTML = `${d}<small>${d === 1 ? "day" : "days"}</small>`;
-    root.querySelector(".cd-rest").innerHTML = `${h}<span>hr</span>${String(m).padStart(2, "0")}<span>min</span>`;
-  }
-  tick(); setInterval(tick, 1000);
-}
+        root.querySelector(".cd-title").textContent = title;
+        function tick() {
+          let ms = target - Date.now();
+          const box = root.querySelector(".countdown");
+          if (ms <= 0) {
+            box.classList.add("done");
+            root.querySelector(".cd-days").textContent =
+              q.get("done") || "Shipped";
+            root.querySelector(".cd-rest").textContent = "";
+            return;
+          }
+          const days = Math.floor(ms / 864e5);
+          ms -= days * 864e5;
+          const h = Math.floor(ms / 36e5);
+          ms -= h * 36e5;
+          const m = Math.floor(ms / 6e4);
+          const plural = (n, w) => (n === 1 ? w : w + "s");
+          const big = root.querySelector(".cd-days"),
+            rest = root.querySelector(".cd-rest");
+          if (days >= 7) {
+            const w = Math.floor(days / 7),
+              d = days % 7;
+            big.innerHTML = `${w}<small>${plural(w, "week")}</small>`;
+            rest.innerHTML = `${d}<span>${plural(d, "day")}</span>${h}<span>hr</span>`;
+          } else {
+            big.innerHTML = `${days}<small>${plural(days, "day")}</small>`;
+            rest.innerHTML = `${h}<span>hr</span>${String(m).padStart(2, "0")}<span>min</span>`;
+          }
+        }
+        tick();
+        setInterval(tick, 1000);
+      }
 
-view === "countdown" ? renderCountdown() : renderClocks();
-</script>
-</body>
+      view === "countdown" ? renderCountdown() : renderClocks();
+    </script>
+  </body>
 </html>
