@@ -1,295 +1,114 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AVA dev widgets</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      :root {
-        --pine: #16382e;
-        --pine-2: #1d4a3d;
-        --teal: #359683;
-        --flag: #ffe708;
-        --ball: #ffffff;
-        --mist: #a9c9bf;
-      }
-      * {
-        box-sizing: border-box;
-        margin: 0;
-      }
-      html,
-      body {
-        height: 100%;
-      }
-      html,
-      body {
-        background: transparent;
-      }
-      body {
-        color: var(--ball);
-        font-family: "Sora", "Avenir Next", "Segoe UI", system-ui, sans-serif;
-        font-variant-numeric: tabular-nums;
-        padding: 0;
-        overflow: hidden;
-      }
-      #root {
-        height: 100%;
-        background: var(--pine);
-        border-radius: 12px;
-        padding: 14px 16px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-      }
-      /* ---------- clocks ---------- */
-      .clocks {
-        display: grid;
-        gap: 10px;
-        grid-template-columns: 1fr;
-      }
-      @media (min-width: 520px) {
-        .clocks {
-          grid-template-columns: repeat(3, 1fr);
-          gap: 18px;
-        }
-      }
-      .clock {
-        display: grid;
-        grid-template-columns: 44px 1fr auto;
-        align-items: center;
-        gap: 10px;
-      }
-      .arc {
-        width: 44px;
-        height: 24px;
-        overflow: visible;
-      }
-      .arc path {
-        fill: none;
-        stroke: var(--teal);
-        stroke-width: 2;
-        stroke-linecap: round;
-        opacity: 0.55;
-      }
-      .arc line {
-        stroke: var(--pine-2);
-        stroke-width: 2;
-      }
-      .arc circle {
-        fill: var(--ball);
-        transition:
-          cx 1s,
-          cy 1s;
-      }
-      .arc.night circle {
-        fill: var(--mist);
-        opacity: 0.55;
-      }
-      .who {
-        font-size: 13px;
-        line-height: 1.25;
-      }
-      .who small {
-        display: block;
-        color: var(--mist);
-        font-size: 11px;
-      }
-      .time {
-        font-size: 22px;
-        font-weight: 600;
-        letter-spacing: -0.01em;
-        text-align: right;
-      }
-      .time span {
-        font-size: 11px;
-        font-weight: 400;
-        color: var(--mist);
-        margin-left: 3px;
-      }
-      /* ---------- countdown ---------- */
-      .countdown {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-        text-align: center;
-      }
-      .cd-title {
-        font-size: 19px;
-        font-weight: 600;
-        color: var(--ball);
-        letter-spacing: -0.01em;
-      }
-      .cd-main {
-        display: flex;
-        align-items: baseline;
-        justify-content: center;
-        gap: 14px;
-        flex-wrap: wrap;
-      }
-      .cd-days {
-        font-size: 44px;
-        font-weight: 700;
-        color: var(--flag);
-        line-height: 1;
-        letter-spacing: -0.02em;
-      }
-      .cd-days small {
-        font-size: 15px;
-        font-weight: 600;
-        margin-left: 6px;
-        color: var(--flag);
-      }
-      .cd-rest {
-        font-size: 16px;
-        font-weight: 600;
-      }
-      .cd-rest span {
-        color: var(--mist);
-        font-weight: 400;
-        font-size: 12px;
-        margin: 0 8px 0 2px;
-      }
-      .done .cd-days {
-        color: var(--teal);
-        font-size: 30px;
-      }
-      .err {
-        color: var(--mist);
-        font-size: 13px;
-        line-height: 1.5;
-      }
-      /* ---------- stats ---------- */
-      .stats {
-        display: grid;
-        gap: 12px;
-      }
-      .st-top {
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        gap: 16px;
-      }
-      .st-big {
-        font-size: 40px;
-        font-weight: 700;
-        color: var(--flag);
-        line-height: 1;
-        letter-spacing: -0.02em;
-      }
-      .st-lbl {
-        font-size: 12px;
-        color: var(--mist);
-        margin-top: 6px;
-      }
-      .spark {
-        display: flex;
-        align-items: flex-end;
-        gap: 4px;
-        height: 46px;
-      }
-      .spark i {
-        display: block;
-        width: 10px;
-        min-height: 3px;
-        background: var(--teal);
-        border-radius: 2px 2px 0 0;
-      }
-      .spark i.now {
-        background: var(--flag);
-      }
-      .st-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px 18px;
-        font-size: 12px;
-        color: var(--mist);
-      }
-      .st-row b {
-        color: var(--ball);
-        font-weight: 600;
-        font-size: 14px;
-        margin-right: 4px;
-      }
-      .st-foot {
-        font-size: 11px;
-        color: var(--mist);
-        opacity: 0.7;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script>
-      const q = new URLSearchParams(location.search);
-      const view = q.get("view") || "clocks";
-      const root = document.getElementById("root");
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>AVA dev widgets</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pine: #16382e;
+    --pine-2: #1d4a3d;
+    --teal: #359683;
+    --flag: #ffe708;
+    --ball: #ffffff;
+    --mist: #a9c9bf;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; }
+  :root { color-scheme: light dark; }
+  html, body { background: transparent; }
+  body {
+    color: var(--ball);
+    font-family: "Sora", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+    font-variant-numeric: tabular-nums;
+    padding: 0;
+    overflow: hidden;
+  }
+  #root {
+    height: 100%;
+    background: var(--pine);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  /* ---------- clocks ---------- */
+  .clocks { display: grid; gap: 10px; grid-template-columns: 1fr; }
+  @media (min-width: 520px) { .clocks { grid-template-columns: repeat(3, 1fr); gap: 18px; } }
+  .clock { display: grid; grid-template-columns: 44px 1fr auto; align-items: center; gap: 10px; }
+  .arc { width: 44px; height: 24px; overflow: visible; }
+  .arc path { fill: none; stroke: var(--teal); stroke-width: 2; stroke-linecap: round; opacity: .55; }
+  .arc line { stroke: var(--pine-2); stroke-width: 2; }
+  .arc circle { fill: var(--ball); transition: cx 1s, cy 1s; }
+  .arc.night circle { fill: var(--mist); opacity: .55; }
+  .who { font-size: 13px; line-height: 1.25; }
+  .who small { display: block; color: var(--mist); font-size: 11px; }
+  .time { font-size: 22px; font-weight: 600; letter-spacing: -.01em; text-align: right; }
+  .time span { font-size: 11px; font-weight: 400; color: var(--mist); margin-left: 3px; }
+  /* ---------- countdown ---------- */
+  .countdown { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
+  .cd-title { font-size: 19px; font-weight: 600; color: var(--ball); letter-spacing: -.01em; }
+  .cd-main { display: flex; align-items: baseline; justify-content: center; gap: 14px; flex-wrap: wrap; }
+  .cd-days { font-size: 44px; font-weight: 700; color: var(--flag); line-height: 1; letter-spacing: -.02em; }
+  .cd-days small { font-size: 15px; font-weight: 600; margin-left: 6px; color: var(--flag); }
+  .cd-rest { font-size: 16px; font-weight: 600; }
+  .cd-rest span { color: var(--mist); font-weight: 400; font-size: 12px; margin: 0 8px 0 2px; }
+  .done .cd-days { color: var(--teal); font-size: 30px; }
+  .err { color: var(--mist); font-size: 13px; line-height: 1.5; }
+  /* ---------- stats ---------- */
+  .stats { display: grid; gap: 12px; }
+  .st-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
+  .st-big { font-size: 40px; font-weight: 700; color: var(--flag); line-height: 1; letter-spacing: -.02em; }
+  .st-lbl { font-size: 12px; color: var(--mist); margin-top: 6px; }
+  .spark { display: flex; align-items: flex-end; gap: 4px; height: 46px; }
+  .spark i { display: block; width: 10px; min-height: 3px; background: var(--teal); border-radius: 2px 2px 0 0; }
+  .spark i.now { background: var(--flag); }
+  .st-row { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12px; color: var(--mist); }
+  .st-row b { color: var(--ball); font-weight: 600; font-size: 14px; margin-right: 4px; }
+  .st-foot { font-size: 11px; color: var(--mist); opacity: .7; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const q = new URLSearchParams(location.search);
+const view = q.get("view") || "clocks";
+const root = document.getElementById("root");
+// optional fallback: ?bg=191919 paints the corners a solid color if a host won't show transparency
+if (/^[0-9a-f]{3,8}$/i.test(q.get("bg") || "")) document.documentElement.style.background = "#" + q.get("bg");
 
-      // ---- time zone helpers (DST-correct via Intl) ----
-      function partsIn(date, tz) {
-        const f = new Intl.DateTimeFormat("en-US", {
-          timeZone: tz,
-          hourCycle: "h23",
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-        });
-        const o = {};
-        for (const p of f.formatToParts(date)) o[p.type] = p.value;
-        return {
-          y: +o.year,
-          mo: +o.month,
-          d: +o.day,
-          h: +o.hour % 24,
-          mi: +o.minute,
-          s: +o.second,
-        };
-      }
-      function offsetMin(date, tz) {
-        const p = partsIn(date, tz);
-        return Math.round(
-          (Date.UTC(p.y, p.mo - 1, p.d, p.h, p.mi, p.s) - date.getTime()) /
-            60000,
-        );
-      }
-      function zonedToUtc(str, tz) {
-        const m = str.match(/^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}))?/);
-        if (!m) return null;
-        const guess = Date.UTC(
-          +m[1],
-          m[2] - 1,
-          +m[3],
-          +(m[4] || 0),
-          +(m[5] || 0),
-        );
-        let t = guess - offsetMin(new Date(guess), tz) * 60000;
-        return (
-          t -
-          (offsetMin(new Date(t), tz) - offsetMin(new Date(guess), tz)) * 60000
-        );
-      }
+// ---- time zone helpers (DST-correct via Intl) ----
+function partsIn(date, tz) {
+  const f = new Intl.DateTimeFormat("en-US", { timeZone: tz, hourCycle: "h23",
+    year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  const o = {}; for (const p of f.formatToParts(date)) o[p.type] = p.value;
+  return { y: +o.year, mo: +o.month, d: +o.day, h: +o.hour % 24, mi: +o.minute, s: +o.second };
+}
+function offsetMin(date, tz) {
+  const p = partsIn(date, tz);
+  return Math.round((Date.UTC(p.y, p.mo - 1, p.d, p.h, p.mi, p.s) - date.getTime()) / 60000);
+}
+function zonedToUtc(str, tz) {
+  const m = str.match(/^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}))?/);
+  if (!m) return null;
+  const guess = Date.UTC(+m[1], m[2] - 1, +m[3], +(m[4] || 0), +(m[5] || 0));
+  let t = guess - offsetMin(new Date(guess), tz) * 60000;
+  return t - (offsetMin(new Date(t), tz) - offsetMin(new Date(guess), tz)) * 60000;
+}
 
-      // ---- clocks ----
-      // ?view=clocks&zones=Central|America/Chicago,Eastern|America/New_York,Germany|Europe/Berlin
-      const defaultZones =
-        "Central|America/Chicago,Eastern|America/New_York,Germany|Europe/Berlin";
-      function renderClocks() {
-        const zones = (q.get("zones") || defaultZones).split(",").map((z) => {
-          const [label, tz] = z.split("|");
-          return { label, tz };
-        });
-        root.innerHTML = `<div class="clocks">${zones
-          .map(
-            (z, i) => `
+// ---- clocks ----
+// ?view=clocks&zones=Central|America/Chicago,Eastern|America/New_York,Germany|Europe/Berlin
+const defaultZones = "Central|America/Chicago,Eastern|America/New_York,Germany|Europe/Berlin";
+function renderClocks() {
+  const zones = (q.get("zones") || defaultZones).split(",").map(z => {
+    const [label, tz] = z.split("|"); return { label, tz };
+  });
+  root.innerHTML = `<div class="clocks">${zones.map((z, i) => `
     <div class="clock" id="c${i}">
       <svg class="arc" viewBox="0 0 44 24" aria-hidden="true">
         <line x1="1" y1="22" x2="43" y2="22"/>
@@ -298,139 +117,114 @@
       </svg>
       <div class="who">${z.label}<small></small></div>
       <div class="time"></div>
-    </div>`,
-          )
-          .join("")}</div>`;
-        const ref = zones[0].tz;
-        function tick() {
-          const now = new Date();
-          zones.forEach((z, i) => {
-            const el = document.getElementById("c" + i);
-            const p = partsIn(now, z.tz);
-            const h12 = p.h % 12 || 12;
-            el.querySelector(".time").innerHTML =
-              `${h12}:${String(p.mi).padStart(2, "0")}<span>${p.h < 12 ? "am" : "pm"}</span>`;
-            const diff = (offsetMin(now, z.tz) - offsetMin(now, ref)) / 60;
-            const dayTxt = new Intl.DateTimeFormat("en-US", {
-              timeZone: z.tz,
-              weekday: "short",
-            }).format(now);
-            el.querySelector(".who small").textContent =
-              i === 0 ? dayTxt : `${dayTxt}, ${diff >= 0 ? "+" : ""}${diff}h`;
-            // the ball rides an arc from 6am to 6pm; below the line at night
-            const mins = p.h * 60 + p.mi;
-            const svg = el.querySelector(".arc"),
-              c = svg.querySelector("circle");
-            const day = mins >= 360 && mins < 1080;
-            svg.classList.toggle("night", !day);
-            if (day) {
-              const a = Math.PI * (1 - (mins - 360) / 720);
-              c.setAttribute("cx", (22 + 18 * Math.cos(a)).toFixed(2));
-              c.setAttribute("cy", (22 - 18 * Math.sin(a)).toFixed(2));
-            } else {
-              const f = ((mins - 1080 + 1440) % 1440) / 720;
-              c.setAttribute("cx", (40 - 36 * f).toFixed(2));
-              c.setAttribute("cy", "22");
-            }
-          });
-        }
-        tick();
-        setInterval(tick, 1000);
+    </div>`).join("")}</div>`;
+  const ref = zones[0].tz;
+  function tick() {
+    const now = new Date();
+    zones.forEach((z, i) => {
+      const el = document.getElementById("c" + i);
+      const p = partsIn(now, z.tz);
+      const h12 = p.h % 12 || 12;
+      el.querySelector(".time").innerHTML =
+        `${h12}:${String(p.mi).padStart(2, "0")}<span>${p.h < 12 ? "am" : "pm"}</span>`;
+      const diff = (offsetMin(now, z.tz) - offsetMin(now, ref)) / 60;
+      const dayTxt = new Intl.DateTimeFormat("en-US", { timeZone: z.tz, weekday: "short" }).format(now);
+      el.querySelector(".who small").textContent =
+        i === 0 ? dayTxt : `${dayTxt}, ${diff >= 0 ? "+" : ""}${diff}h`;
+      // the ball rides an arc from 6am to 6pm; below the line at night
+      const mins = p.h * 60 + p.mi;
+      const svg = el.querySelector(".arc"), c = svg.querySelector("circle");
+      const day = mins >= 360 && mins < 1080;
+      svg.classList.toggle("night", !day);
+      if (day) {
+        const a = Math.PI * (1 - (mins - 360) / 720);
+        c.setAttribute("cx", (22 + 18 * Math.cos(a)).toFixed(2));
+        c.setAttribute("cy", (22 - 18 * Math.sin(a)).toFixed(2));
+      } else {
+        const f = ((mins - 1080 + 1440) % 1440) / 720;
+        c.setAttribute("cx", (40 - 36 * f).toFixed(2));
+        c.setAttribute("cy", "22");
       }
+    });
+  }
+  tick(); setInterval(tick, 1000);
+}
 
-      // ---- countdown ----
-      // ?view=countdown&title=imagen%20launch&date=2026-11-20T09:00&tz=America/Chicago&done=Shipped
-      function renderCountdown() {
-        const title = q.get("title") || "Launch";
-        const tz = q.get("tz") || "America/Chicago";
-        const date = q.get("date");
-        const target = date ? zonedToUtc(date, tz) : null;
-        if (!target) {
-          root.innerHTML = `<p class="err">Add a target date to the link, like<br>?view=countdown&amp;title=imagen%20launch&amp;date=2026-11-20T09:00&amp;tz=America/Chicago</p>`;
-          return;
-        }
-        root.innerHTML = `<div class="countdown"><div class="cd-title"></div>
+// ---- countdown ----
+// ?view=countdown&title=imagen%20launch&date=2026-11-20T09:00&tz=America/Chicago&done=Shipped
+function renderCountdown() {
+  const title = q.get("title") || "Launch";
+  const tz = q.get("tz") || "America/Chicago";
+  const date = q.get("date");
+  const target = date ? zonedToUtc(date, tz) : null;
+  if (!target) {
+    root.innerHTML = `<p class="err">Add a target date to the link, like<br>?view=countdown&amp;title=imagen%20launch&amp;date=2026-11-20T09:00&amp;tz=America/Chicago</p>`;
+    return;
+  }
+  root.innerHTML = `<div class="countdown"><div class="cd-title"></div>
     <div class="cd-main"><div class="cd-days"></div><div class="cd-rest"></div></div></div>`;
-        root.querySelector(".cd-title").textContent = title;
-        function tick() {
-          let ms = target - Date.now();
-          const box = root.querySelector(".countdown");
-          if (ms <= 0) {
-            box.classList.add("done");
-            root.querySelector(".cd-days").textContent =
-              q.get("done") || "Shipped";
-            root.querySelector(".cd-rest").textContent = "";
-            return;
-          }
-          const days = Math.floor(ms / 864e5);
-          ms -= days * 864e5;
-          const h = Math.floor(ms / 36e5);
-          ms -= h * 36e5;
-          const m = Math.floor(ms / 6e4);
-          const plural = (n, w) => (n === 1 ? w : w + "s");
-          const big = root.querySelector(".cd-days"),
-            rest = root.querySelector(".cd-rest");
-          if (days >= 7) {
-            const w = Math.floor(days / 7),
-              d = days % 7;
-            big.innerHTML = `${w}<small>${plural(w, "week")}</small>`;
-            rest.innerHTML = `${d}<span>${plural(d, "day")}</span>${h}<span>hr</span>`;
-          } else {
-            big.innerHTML = `${days}<small>${plural(days, "day")}</small>`;
-            rest.innerHTML = `${h}<span>hr</span>${String(m).padStart(2, "0")}<span>min</span>`;
-          }
-        }
-        tick();
-        setInterval(tick, 1000);
-      }
+  root.querySelector(".cd-title").textContent = title;
+  function tick() {
+    let ms = target - Date.now();
+    const box = root.querySelector(".countdown");
+    if (ms <= 0) {
+      box.classList.add("done");
+      root.querySelector(".cd-days").textContent = q.get("done") || "Shipped";
+      root.querySelector(".cd-rest").textContent = "";
+      return;
+    }
+    const days = Math.floor(ms / 864e5); ms -= days * 864e5;
+    const h = Math.floor(ms / 36e5); ms -= h * 36e5;
+    const m = Math.floor(ms / 6e4);
+    const plural = (n, w) => n === 1 ? w : w + "s";
+    const big = root.querySelector(".cd-days"), rest = root.querySelector(".cd-rest");
+    if (days >= 7) {
+      const w = Math.floor(days / 7), d = days % 7;
+      big.innerHTML = `${w}<small>${plural(w, "week")}</small>`;
+      rest.innerHTML = `${d}<span>${plural(d, "day")}</span>${h}<span>hr</span>`;
+    } else {
+      big.innerHTML = `${days}<small>${plural(days, "day")}</small>`;
+      rest.innerHTML = `${h}<span>hr</span>${String(m).padStart(2, "0")}<span>min</span>`;
+    }
+  }
+  tick(); setInterval(tick, 1000);
+}
 
-      // ---- stats (reads ./stats.json, written by the app repo's notion-stats workflow) ----
-      async function renderStats() {
-        let st;
-        try {
-          const r = await fetch("stats.json?t=" + Math.floor(Date.now() / 36e5));
-          if (!r.ok) throw 0;
-          st = await r.json();
-        } catch {
-          root.innerHTML = `<p class="err">Stats show up here after the first notion-stats workflow run.</p>`;
-          return;
-        }
-        const weeks = st.weeks || [];
-        const max = Math.max(1, ...weeks.map((w) => w.merged));
-        const k = (n) =>
-          Math.abs(n) >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, "") + "k" : String(n);
-        const ago = (h) => (h < 1 ? "just now" : h < 24 ? `${h}h ago` : `${Math.floor(h / 24)}d ago`);
-        const hrs = Math.floor((Date.now() - new Date(st.generatedAt)) / 36e5);
-        const now = weeks.length ? weeks[weeks.length - 1].merged : 0;
-        const bits = [];
-        if (st.streakDays != null)
-          bits.push(`<span><b>${st.streakDays}</b>day ship streak</span>`);
-        if (st.prodReleases30d != null)
-          bits.push(
-            `<span><b>${st.prodReleases30d}</b>prod ${st.prodReleases30d === 1 ? "release" : "releases"} in 30 days</span>`
-          );
-        if (st.stageAheadLines != null)
-          bits.push(
-            `<span><b>${st.stageAheadLines >= 0 ? "+" : ""}${k(st.stageAheadLines)}</b>lines on stage, not yet in prod</span>`
-          );
-        root.innerHTML = `<div class="stats">
-          <div class="st-top">
-            <div><div class="st-big">${now}</div><div class="st-lbl">${now === 1 ? "PR" : "PRs"} merged this week</div></div>
-            <div class="spark" title="PRs merged per week, last ${weeks.length} weeks">${weeks
-              .map(
-                (w, i) =>
-                  `<i class="${i === weeks.length - 1 ? "now" : ""}" style="height:${Math.round(3 + (43 * w.merged) / max)}px" title="Week of ${w.start}: ${w.merged}"></i>`
-              )
-              .join("")}</div>
-          </div>
-          <div class="st-row">${bits.join("")}</div>
-          <div class="st-foot">Updated ${ago(hrs)}</div>
-        </div>`;
-      }
+// ---- stats (reads ./stats.json, written nightly by the app repo's notion-stats workflow) ----
+async function renderStats() {
+  let st;
+  try {
+    const r = await fetch("stats.json?t=" + Math.floor(Date.now() / 36e5));
+    if (!r.ok) throw 0;
+    st = await r.json();
+  } catch {
+    root.innerHTML = `<p class="err">Stats show up here after the first notion-stats workflow run.</p>`;
+    return;
+  }
+  const weeks = st.weeks || [];
+  const max = Math.max(1, ...weeks.map(w => w.merged));
+  const k = n => Math.abs(n) >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, "") + "k" : String(n);
+  const ago = h => h < 1 ? "just now" : h < 24 ? `${h}h ago` : `${Math.floor(h / 24)}d ago`;
+  const hrs = Math.floor((Date.now() - new Date(st.generatedAt)) / 36e5);
+  const now = weeks.length ? weeks[weeks.length - 1].merged : 0;
+  const bits = [];
+  if (st.streakDays != null) bits.push(`<span><b>${st.streakDays}</b>${st.streakDays === 1 ? "day" : "day"} ship streak</span>`);
+  if (st.prodReleases30d != null) bits.push(`<span><b>${st.prodReleases30d}</b>prod ${st.prodReleases30d === 1 ? "release" : "releases"} in 30 days</span>`);
+  if (st.stageAheadLines != null) bits.push(`<span><b>${st.stageAheadLines >= 0 ? "+" : ""}${k(st.stageAheadLines)}</b>lines on stage, not yet in prod</span>`);
+  root.innerHTML = `<div class="stats">
+    <div class="st-top">
+      <div><div class="st-big">${now}</div><div class="st-lbl">${now === 1 ? "PR" : "PRs"} merged this week</div></div>
+      <div class="spark" title="PRs merged per week, last ${weeks.length} weeks">${weeks.map((w, i) =>
+        `<i class="${i === weeks.length - 1 ? "now" : ""}" style="height:${Math.round(3 + 43 * w.merged / max)}px" title="Week of ${w.start}: ${w.merged}"></i>`).join("")}</div>
+    </div>
+    <div class="st-row">${bits.join("")}</div>
+    <div class="st-foot">Updated ${ago(hrs)}</div>
+  </div>`;
+}
 
-      if (view === "countdown") renderCountdown();
-      else if (view === "stats") renderStats();
-      else renderClocks();
-    </script>
-  </body>
+if (view === "countdown") renderCountdown();
+else if (view === "stats") renderStats();
+else renderClocks();
+</script>
+</body>
 </html>
