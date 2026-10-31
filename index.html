@@ -165,6 +165,63 @@
         font-size: 13px;
         line-height: 1.5;
       }
+      /* ---------- stats ---------- */
+      .stats {
+        display: grid;
+        gap: 12px;
+      }
+      .st-top {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 16px;
+      }
+      .st-big {
+        font-size: 40px;
+        font-weight: 700;
+        color: var(--flag);
+        line-height: 1;
+        letter-spacing: -0.02em;
+      }
+      .st-lbl {
+        font-size: 12px;
+        color: var(--mist);
+        margin-top: 6px;
+      }
+      .spark {
+        display: flex;
+        align-items: flex-end;
+        gap: 4px;
+        height: 46px;
+      }
+      .spark i {
+        display: block;
+        width: 10px;
+        min-height: 3px;
+        background: var(--teal);
+        border-radius: 2px 2px 0 0;
+      }
+      .spark i.now {
+        background: var(--flag);
+      }
+      .st-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 18px;
+        font-size: 12px;
+        color: var(--mist);
+      }
+      .st-row b {
+        color: var(--ball);
+        font-weight: 600;
+        font-size: 14px;
+        margin-right: 4px;
+      }
+      .st-foot {
+        font-size: 11px;
+        color: var(--mist);
+        opacity: 0.7;
+      }
     </style>
   </head>
   <body>
@@ -327,7 +384,53 @@
         setInterval(tick, 1000);
       }
 
-      view === "countdown" ? renderCountdown() : renderClocks();
+      // ---- stats (reads ./stats.json, written by the app repo's notion-stats workflow) ----
+      async function renderStats() {
+        let st;
+        try {
+          const r = await fetch("stats.json?t=" + Math.floor(Date.now() / 36e5));
+          if (!r.ok) throw 0;
+          st = await r.json();
+        } catch {
+          root.innerHTML = `<p class="err">Stats show up here after the first notion-stats workflow run.</p>`;
+          return;
+        }
+        const weeks = st.weeks || [];
+        const max = Math.max(1, ...weeks.map((w) => w.merged));
+        const k = (n) =>
+          Math.abs(n) >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, "") + "k" : String(n);
+        const ago = (h) => (h < 1 ? "just now" : h < 24 ? `${h}h ago` : `${Math.floor(h / 24)}d ago`);
+        const hrs = Math.floor((Date.now() - new Date(st.generatedAt)) / 36e5);
+        const now = weeks.length ? weeks[weeks.length - 1].merged : 0;
+        const bits = [];
+        if (st.streakDays != null)
+          bits.push(`<span><b>${st.streakDays}</b>day ship streak</span>`);
+        if (st.prodReleases30d != null)
+          bits.push(
+            `<span><b>${st.prodReleases30d}</b>prod ${st.prodReleases30d === 1 ? "release" : "releases"} in 30 days</span>`
+          );
+        if (st.stageAheadLines != null)
+          bits.push(
+            `<span><b>${st.stageAheadLines >= 0 ? "+" : ""}${k(st.stageAheadLines)}</b>lines on stage, not yet in prod</span>`
+          );
+        root.innerHTML = `<div class="stats">
+          <div class="st-top">
+            <div><div class="st-big">${now}</div><div class="st-lbl">${now === 1 ? "PR" : "PRs"} merged this week</div></div>
+            <div class="spark" title="PRs merged per week, last ${weeks.length} weeks">${weeks
+              .map(
+                (w, i) =>
+                  `<i class="${i === weeks.length - 1 ? "now" : ""}" style="height:${Math.round(3 + (43 * w.merged) / max)}px" title="Week of ${w.start}: ${w.merged}"></i>`
+              )
+              .join("")}</div>
+          </div>
+          <div class="st-row">${bits.join("")}</div>
+          <div class="st-foot">Updated ${ago(hrs)}</div>
+        </div>`;
+      }
+
+      if (view === "countdown") renderCountdown();
+      else if (view === "stats") renderStats();
+      else renderClocks();
     </script>
   </body>
 </html>
