@@ -27,13 +27,25 @@
       body {
         height: 100%;
       }
+      html,
       body {
-        background: var(--pine);
+        background: transparent;
+      }
+      body {
         color: var(--ball);
         font-family: "Sora", "Avenir Next", "Segoe UI", system-ui, sans-serif;
         font-variant-numeric: tabular-nums;
-        padding: 14px 16px;
+        padding: 0;
         overflow: hidden;
+      }
+      #root {
+        height: 100%;
+        background: var(--pine);
+        border-radius: 12px;
+        padding: 14px 16px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
       }
       /* ---------- clocks ---------- */
       .clocks {
