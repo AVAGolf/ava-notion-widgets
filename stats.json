@@ -1,0 +1,41 @@
+{
+  "generatedAt": "2026-10-31T21:20:54.760Z",
+  "weeks": [
+    {
+      "start": "2026-09-07",
+      "merged": 48
+    },
+    {
+      "start": "2026-09-14",
+      "merged": 42
+    },
+    {
+      "start": "2026-09-21",
+      "merged": 64
+    },
+    {
+      "start": "2026-09-28",
+      "merged": 55
+    },
+    {
+      "start": "2026-10-05",
+      "merged": 91
+    },
+    {
+      "start": "2026-10-12",
+      "merged": 55
+    },
+    {
+      "start": "2026-10-19",
+      "merged": 124
+    },
+    {
+      "start": "2026-10-26",
+      "merged": 93
+    }
+  ],
+  "streakDays": 86,
+  "prodReleases30d": 22,
+  "codeLines": null,
+  "stageAheadLines": null
+}
