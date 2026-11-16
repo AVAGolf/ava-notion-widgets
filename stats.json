@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T15:18:25.493Z",
+  "generatedAt": "2026-11-16T17:01:29.068Z",
   "weeks": [
     {
       "start": "2026-09-28",
@@ -31,7 +31,7 @@
     },
     {
       "start": "2026-11-16",
-      "merged": 5
+      "merged": 6
     }
   ],
   "streakDays": 102,
