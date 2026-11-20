@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-20T17:47:02.878Z",
+  "generatedAt": "2026-11-20T18:45:24.330Z",
   "weeks": [
     {
       "start": "2026-09-28",
@@ -31,10 +31,10 @@
     },
     {
       "start": "2026-11-16",
-      "merged": 73
+      "merged": 74
     }
   ],
-  "streakDays": 100,
+  "streakDays": 99,
   "prodReleases30d": 26,
   "codeLines": 257935,
   "stageAheadLines": 123
